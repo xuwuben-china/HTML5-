@@ -1,7 +1,2 @@
-# myFirstDatabase
-just another repository
-
-Hi Humans!
-
-This's My first with GitHub write file, I'm a green hands for Coffeescript;
+这是我学习时写的一些代码
 

@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>图片笑话大全</title>
+	<title>搞笑GIF</title>
+	<link rel="stylesheet" href="../css/heater.css">
 	<style>
 		*{margin: 0;padding: 0;}
 		#container{
@@ -30,8 +30,45 @@
 	</style>
 </head>
 <body>
+	<div id="heater">
+		<ul class="nav">
+			<li>ajax
+				<ul class="second-nav">
+					<li><a href="使用ajax.html">ajax测试</a></li>
+					<li><a href="鬼故事.html">鬼故事</a></li>
+					<li><a href="笑话大全.html">笑话大全</a></li>
+					<li><a href="图片笑话大全.html">图片大全</a></li>
+					<li><a href="花瓣福利.html">花瓣福利</a></li>
+					<li><a href="搞笑GIF.html">搞笑GIF</a></li>
+				</ul>
+			</li>
+			<li>h5案例
+				<ul class="second-nav">
+					<li><a href="../h5小案例/挂壁时钟.html">挂壁时钟</a></li>
+					<li><a href="../h5小案例/3d城市.html">3d城市</a></li>
+					<li><a href="../h5小案例/3d小模型.html">3d模型</a></li>
+				</ul>
+			</li>
+			<li>js小案例
+				<ul class="second-nav">
+					<li><a href="../js小案例/轮播/轮播.html">轮播</a></li>
+					<li><a href="../js小案例/时间/倒计时.html">倒计时</a></li>
+					<li><a href="../js小案例/小漫画/小漫画.html">小漫画</a></li>
+					<li><a href="../js小案例/查找替换.html">查找替换</a></li>
+					<li><a href="../js小案例/随机数组.html">随机数组</a></li>
+				</ul>
+			</li>
+			<li>无缝轮播
+				<ul class="second-nav">
+					<li><a href="../无缝轮播/无缝轮播-relative.html">无缝轮播</a></li>
+					<li><a href="../无缝轮播/无缝轮播-speed.html">无缝轮播</a></li>
+					<li><a href="../无缝轮播/无缝轮播-time.html">无缝轮播</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
 	<div id="container">
-		<h1>图片笑话大全</h1>
+		<h1>搞笑GIF</h1>
 		<ul id="list">
 			<li></li>
 			<li></li>
@@ -42,29 +79,27 @@
 	</div>
 	<script src="AJAX.js"></script>
 	<script>
-		var aLis = document.getElementsByTagName("li");
+		var aLis = document.querySelectorAll("#list li");
 		var cPage = 1;
 		var onOff = true;
 		getData(cPage);
 		function getData(cPage){
-			var url = "http://route.showapi.com/341-2?num=20&page="+cPage+"&showapi_appid=56053&showapi_test_draft=false&type=34&showapi_sign=e59ea5fd5d434e10b64e75a5abe181df";
+			var url = "https://route.showapi.com/341-3?maxResult=20&page="+cPage+"&showapi_appid=41249&showapi_sign=b3df448fb71d46f4a99a751d85b91996";
 			ajax("get",url,"",function(data){
-				
 				data = JSON.parse(data).showapi_res_body;
-				
 				var contentlist = data.contentlist;
+				
 				(function loadImg(i){
-					if(i > 8){
+					if(i > 19){
 						onOff = true;
-						toLoad();
 						return;
 					}
 					onOff = false;
 					var item = contentlist[i];
-					console.log(item)
 					var oDiv = document.createElement("div"),
 					    oP = document.createElement("p"),
 						oImg = document.createElement("img");
+					// console.log(_index)
 					oImg.src = item.img;
 					oP.innerHTML = item.title;
 					oImg.onload = function(){
@@ -79,9 +114,6 @@
 			})
 		}
 		window.onscroll = function(){
-			toLoad();
-		}
-		function toLoad(){
 			var _index = getShort();
 			var oLi = aLis[_index];
 			var aliH = oLi.offsetHeight;

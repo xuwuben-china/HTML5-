@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>图片笑话大全</title>
+	<link rel="stylesheet" href="../css/heater.css">
+	<style>
+		*{margin: 0;padding: 0;}
+		#container{
+			width: 90%;
+			margin: auto;
+		}
+		#container h1{
+			text-align: center;
+			margin: 20px 0;
+		}
+		#list li{
+			width: 20%;
+			list-style: none;
+			float:left;
+			box-sizing:border-box;
+			padding:5px;
+		}
+		#list li div + div {
+			margin-top: 20px;
+		}
+		#list li div img{
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div id="heater">
+		<ul class="nav">
+			<li>ajax
+				<ul class="second-nav">
+					<li><a href="使用ajax.html">ajax测试</a></li>
+					<li><a href="鬼故事.html">鬼故事</a></li>
+					<li><a href="笑话大全.html">笑话大全</a></li>
+					<li><a href="图片笑话大全.html">图片大全</a></li>
+					<li><a href="花瓣福利.html">花瓣福利</a></li>
+					<li><a href="搞笑GIF.html">搞笑GIF</a></li>
+				</ul>
+			</li>
+			<li>h5案例
+				<ul class="second-nav">
+					<li><a href="../h5小案例/挂壁时钟.html">挂壁时钟</a></li>
+					<li><a href="../h5小案例/3d城市.html">3d城市</a></li>
+					<li><a href="../h5小案例/3d小模型.html">3d模型</a></li>
+				</ul>
+			</li>
+			<li>js小案例
+				<ul class="second-nav">
+					<li><a href="../js小案例/轮播/轮播.html">轮播</a></li>
+					<li><a href="../js小案例/时间/倒计时.html">倒计时</a></li>
+					<li><a href="../js小案例/小漫画/小漫画.html">小漫画</a></li>
+					<li><a href="../js小案例/查找替换.html">查找替换</a></li>
+					<li><a href="../js小案例/随机数组.html">随机数组</a></li>
+				</ul>
+			</li>
+			<li>无缝轮播
+				<ul class="second-nav">
+					<li><a href="../无缝轮播/无缝轮播-relative.html">无缝轮播</a></li>
+					<li><a href="../无缝轮播/无缝轮播-speed.html">无缝轮播</a></li>
+					<li><a href="../无缝轮播/无缝轮播-time.html">无缝轮播</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<div id="container">
+		<h1>图片笑话大全</h1>
+		<ul id="list">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	<script src="AJAX.js"></script>
+	<script>
+		var aLis = document.querySelectorAll("#list li");
+		var cPage = 1;
+		var onOff = true;
+		console.log(aLis[0])
+		getData(cPage);
+		function getData(cPage){
+			var url = "http://route.showapi.com/341-2?num=20&page="+cPage+"&showapi_appid=56053&showapi_test_draft=false&type=34&showapi_sign=e59ea5fd5d434e10b64e75a5abe181df";
+			ajax("get",url,"",function(data){
+				
+				data = JSON.parse(data).showapi_res_body;
+				console.log(data)
+				var contentlist = data.contentlist;
+				(function loadImg(i){
+					if(i > 19){
+						onOff = true;
+						toLoad();
+						return;
+					}
+					onOff = false;
+					var item = contentlist[i];
+					var oDiv = document.createElement("div"),
+					    oP = document.createElement("p"),
+						oImg = document.createElement("img");
+					oImg.src = item.img;
+					oP.innerHTML = item.title;
+					oImg.onload = function(){
+						var _index = getShort();
+
+						oDiv.appendChild(oImg);
+						oDiv.appendChild(oP);
+						aLis[_index].appendChild(oDiv);
+						i++;
+						loadImg(i);
+					}
+				})(0)
+			})
+		}
+		window.onscroll = function(){
+			toLoad();
+		}
+		function toLoad(){
+			var _index = getShort();
+			var oLi = aLis[_index];
+			var aliH = oLi.offsetHeight;
+			var aliT = getTop(oLi);
+			var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+			var wH = document.documentElement.clientHeight;
+			if(aliH + aliT < scrollTop + wH){
+				if(onOff){
+					cPage++;
+					getData(cPage);
+				}
+			}
+		}
+		function getTop(obj){
+			var iTop = 0;
+			while(obj){
+				iTop += obj.offsetTop;
+				obj = obj.offsetParent;
+			}
+			return iTop;
+		}
+		function getShort(){
+			var index = 0;
+			var ih = aLis[index].offsetHeight;
+			for(var i=0;i<aLis.length;i++){
+				if(aLis[i].offsetHeight < ih){
+					index = i;
+					ih = aLis[i].offsetHeight;
+				}
+			}
+			return index;
+		}
+	</script>
+</body>
+</html>

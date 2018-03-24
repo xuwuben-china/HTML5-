@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>挂壁时钟</title>
+	<style>
+		* {
+			margin: 0;padding: 0;
+		}
+		.box {
+			position: relative;
+			width: 300px;
+			height: 300px;
+			margin: 50px auto 0;
+			border-radius:50%;
+			overflow: hidden;
+		}
+		.box:after{
+			position:absolute;
+			left:145px;
+			bottom:145px;
+			display: block;
+			content: "";
+			width: 10px;
+			height: 10px;
+			background-color:#000;
+			border-radius: 50%;	
+
+		}
+		.box img {
+			width: 300px;
+			height: 300px;
+		}
+		.zhen div  {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin-top: -1px;
+			height: 2px;
+			transform-origin: left;
+		}
+		.hour {
+			width: 60px;
+			background: red;
+			transform: rotateZ(-90deg);
+		}
+		.minute {
+			width: 80px;
+			background: lime;
+			transform: rotateZ(-90deg);
+		}
+		.second {
+			width: 100px;
+			background: blue;
+			transform: rotateZ(-90deg);
+
+		}
+	</style>
+</head>
+<body>
+	<div class="box">
+		<img src="images/clock.jpg" alt="">
+		<div class="zhen">
+			<div class="hour"></div>
+			<div class="minute"></div>
+			<div class="second"></div>
+		</div>
+	</div>
+	<script>
+		var hourHand = document.getElementsByClassName("hour")[0],
+		    minuteHand = document.getElementsByClassName("minute")[0],
+		    secondHand = document.getElementsByClassName("second")[0];
+		clock();
+		function clock(){
+			var date = new Date(),
+				hours = date.getHours(),
+				minutes = date.getMinutes(),
+				seconds = date.getSeconds();
+			console.log(seconds)
+			hourHand.style.transform = "rotateZ("+(hours*30-90+minutes/2)+"deg)"
+			minuteHand.style.transform = "rotateZ("+(minutes*6-90+seconds/10)+"deg)";
+			secondHand.style.transform = "rotateZ("+(seconds*6-90)+"deg)";
+		}
+		setInterval(clock,10);
+	</script>
+</body>
+</html>

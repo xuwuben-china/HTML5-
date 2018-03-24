@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>3d城市</title>
+	<style>
+		* {
+            margin: 0;
+            padding: 0
+        }
+        html,body{
+            height: 100%;
+            background: #5596BC;
+            position: relative;
+            perspective: 800px;
+            overflow: hidden;
+        }
+        .box{
+        	width: 100%;
+        	height: 100%;
+        	position: fixed;
+        	perspective: 800px;
+        }
+        #city3d,.tower,.tower p,.tower p i{
+        	position: absolute;
+			transform-style: preserve-3d;
+        }
+		#city3d{
+			left: 50%;
+            top: 50%;
+          	background: #D0E4EF;
+          	transform: rotateX(60deg) rotateZ(0deg);
+          	animation: play 50s linear infinite;
+		}
+		@keyframes play{
+			form{ transform: rotateX(60deg) rotateZ(180deg) }
+			to{  transform: rotateX(60deg) rotateZ(360deg) }
+		}
+		p{
+			background-color:rgba(176,208,223,0.9);
+		}
+		.tower.model1 p{
+			background-image: url("images/1.png");
+		}
+		.tower.model2 p{
+			background-image: url("images/2.png");
+		}
+		.tower.model3 p{
+			background-image: url("images/3.png");
+		}
+		.tower.model4 p{
+			background-image: url("images/4.png");
+		}
+		.tower.model5 p{
+			background-image: url("images/5.png");
+		}
+		.tower .front{
+			transform: rotateX(90deg);
+			transform-origin: top 0 ;
+		}
+		.tower .left{
+			right: 0;
+			top: 0;
+			transform: rotateY(-90deg);
+			transform-origin: right 0 ;
+		}
+		.tower .back{
+			left: 0;
+			top: 0;
+			transform: rotateY(-90deg);
+			transform-origin: left 0 ;
+		}
+		.tower .right{
+			top: 0;
+			right: 0;
+			transform: rotateY(-90deg);
+			transform-origin: right 0 ;
+		}
+		.tower .front i{
+			position: absolute;
+			right: 0px;
+			bottom: 1px;
+			background:rgba(176,208,223,0.9);
+			transform: rotateX(90deg);
+			transform-origin: bottom 0;
+		}
+		.btn{
+			position: absolute;
+			z-index: 999;
+			top: 10%;
+			left: 50%;
+			margin: auto;
+			transform: translate(-50%, 0);
+			text-align: center;
+		}.btn input{
+			padding: 2px;
+			border: 0px;
+			background-color: rgba(176,208,223,0.9);
+		}
+		.btn i{
+			font-style: normal;
+			padding: 3px;
+			background-color: #ccc;
+			border-radius: 10%;
+			cursor: pointer;
+		}
+	</style>
+
+</head>
+<body>
+	<div class="btn">
+		<h3>生成城市</h3>
+		<input type="text" placeholder="请输入数字">
+		<i>确定</i>
+	</div>
+	<div class="box"></div>
+	<script>
+		var aBox = document.getElementsByClassName("box")[0],
+			aBtn = document.getElementsByClassName("btn")[0],
+			oText= document.getElementsByClassName("text")[0],
+			oInp = document.getElementsByTagName("input")[0],
+			oP = aBtn.getElementsByTagName("p")[0],
+			oI = aBtn.getElementsByTagName("i")[0];
+		function City3d(base){
+			this.base = base;
+			this.interval = 60;
+		}
+		// 初始化
+		City3d.prototype.build = function(parten){
+			this.buildArea(parten);
+			for(var i=0; i<this.base; i++){
+				for( j=0; j<this.base; j++){
+					this.buildEstate(i*this.interval, j*this.interval);
+				}
+			}
+		}
+		//构建地皮
+		City3d.prototype.buildArea = function(parten){
+			var size = this.base*this.interval;
+			this.city = document.createElement('div');
+			this.city.id = "city3d";
+			this.city.style.width = this.city.style.height = size + "px";
+			this.city.style.marginLeft = this.city.style.marginTop = -size/2+'px';
+			parten.appendChild(this.city);
+		}
+		// 构建楼盘
+		City3d.prototype.buildEstate = function(l, t){
+			var tower = document.createElement("div"),
+				leftWall = document.createElement("p"),
+				rightWall = document.createElement("p"),
+				frontWall = document.createElement("p"),
+				backWall = document.createElement("p"),
+				attic = document.createElement("i"),
+				w1 = this.getW();
+				w2 = this.getW();
+				H = this.getH();
+			tower.style.width = w1 + "px";
+			tower.style.height = w2 + "px";
+			tower.className = "tower";
+			tower.style.left = l + "px";
+			tower.style.top = t + "px";
+			leftWall.className = "left";
+			leftWall.style.width = w2 + "px";
+			leftWall.style.height = H + "px";
+			rightWall.className = "right";
+			rightWall.style.width = w2 + "px";
+			rightWall.style.height = H + "px";
+			frontWall.className = "front";
+			frontWall.style.width = w1 + "px";
+			frontWall.style.height = H + "px";
+			backWall.className = "back";
+			backWall.style.width = w1 + "px";
+			backWall.style.height = H + "px";
+			attic.style.width = w1 + "px";
+			attic.style.height = w2 + "px";
+			backWall.appendChild(leftWall);
+			rightWall.appendChild(backWall);
+			frontWall.appendChild(rightWall);
+			frontWall.appendChild(attic);
+			tower.appendChild(frontWall);
+			tower.className += " " + this.getGenre();
+			this.city.appendChild(tower);
+		}
+		//楼盘类型
+		City3d.prototype.genre = ['model1', 'model2', 'model3', 'model4', 'model5'];
+		City3d.prototype.getGenre = function(){
+			var n = Math.floor(Math.random()*5);
+			return this.genre[n];
+		}
+		// 楼宽
+		City3d.prototype.getW = function(){
+			return Math.floor(Math.random()*21)+20;
+		}
+		// 楼高
+		City3d.prototype.getH = function(){
+			return Math.floor(Math.random()*130)+21;
+		}
+		new City3d(5).build(aBox);
+		oI.onclick = function(){
+			var num = oInp.value.trim();
+			if(num !== ""){
+				var reg = /^\d*\d$/;
+				if(reg.test(num)){
+					aBox.innerHTML = "";
+					new City3d(num).build(aBox);
+				}
+			}
+			oInp.value = "";
+		}
+
+	</script>
+</body>
+</html>

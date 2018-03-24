@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>定时器</title>
+	<style>
+		*{margin: 0;padding: 0;user-select:none;}
+		#box{
+			position:relative;
+			margin: 50px auto 50px;
+			width: 300px;
+			height: 496px;
+			overflow:hidden;
+			border:1px solid #f0f0f0;
+
+		}
+		.sup,.sub{
+			position:absolute;
+			z-index: 1;
+			text-align: center;
+			line-height: 40px;
+			color:#fff;
+			width: 100%;
+			cursor:pointer;
+			font-weight: bold;
+			background-color: #000;
+
+		}
+		.sub{
+			bottom:0;
+		}
+		.bgc li:nth-child(1){
+			margin-top:40px;
+		}
+		.bgc li{
+			list-style: none;
+			height: 50px;
+			border:1px solid #ccc;
+		}
+		.cartoon{
+			display:none;
+		}
+		.cartoon li{
+			width: 100%;
+			height:6400px;
+			background:url("images/01.jpeg") 100% 40px/300px  no-repeat,url("images/02.jpeg") 100% 420px/300px  no-repeat,url("images/03.jpeg") 100% 760px/300px  no-repeat,url("images/04.jpeg") 100% 1280px/300px  no-repeat,url("images/05.jpeg") 100% 1780px/300px  no-repeat,url("images/06.jpeg") 100% 2260px/300px  no-repeat,url("images/07.jpeg") 100% 2780px/300px  no-repeat,url("images/08.jpeg") 100% 3290px/300px  no-repeat,url("images/09.jpeg") 100% 3730px/300px  no-repeat,url("images/10.jpeg") 100% 4250px/300px  no-repeat,url("images/11.jpeg") 100% 4740px/300px  no-repeat,url("images/12.jpeg") 100% 5290px/300px  no-repeat;
+		}
+		.icon{
+			display:none;
+			position:absolute;
+			left:5px;
+			top:0px;
+			width: 30px;
+			height: 30px;
+			cursor:pointer;
+			margin:5px 0 0 5px;
+			background:pink url("images/sz.png") left/30px no-repeat;
+		}
+		.autoplay{
+			display: none;
+			position:absolute;
+			font-size: 12px;
+			top:0;
+			left:10px;
+			z-index: 999;
+			width: auto;
+			height:40px;
+			text-align: center;
+			overflow: hidden;
+			color:#fff;
+			cursor:pointer;
+		}
+		dt{
+			line-height: 40px;
+			padding-left:5px;
+
+		}
+		.autoplay:hover{
+			height:100px;
+		}
+		dd{
+			line-height: 30px;
+			height:30px;
+			border-top:1px solid #ccc;
+			background-color:#B594E6; 
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<div class="sup">向上
+			<i class="icon"></i>
+		</div>
+		<dl class="autoplay"> 
+				<dt>自动播放</dt>
+				<dd>快速</dd>
+				<dd>慢速</dd>
+		</dl>
+		<ul class="bgc">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<ul class="cartoon">
+			<li></li>
+		</ul>
+		<div class="sub">向下</div>
+	</div>
+	<script>
+		var aSup = document.getElementsByClassName('sup')[0];
+		var aSub = document.getElementsByClassName('sub')[0];
+		var aBgc = document.getElementsByClassName('bgc')[0];
+		var aCartoon = document.getElementsByClassName('cartoon')[0];
+		var autoPlay = document.getElementsByClassName('autoplay')[0];
+		var aSet = document.getElementsByClassName('icon')[0];
+		var aLis = document.querySelectorAll('.bgc li');
+		var oLi = document.querySelectorAll('.cartoon li')[0];
+		var aDd = document.getElementsByTagName('dd');
+		
+		var timeColor = null,timeColorNav = null,timePlay = null,timeSet = null,timeAutoPlay = null,ON = true;
+		var j=0;
+		onmouse(aSup);
+		onmouse(aSub);
+		// 鼠标事件
+		function onmouse(direction){
+			// 鼠标移入启动随机颜色定时器
+			direction.onmouseover = function(){
+				for(var i=0;i<aLis.length;i++){
+					(function(i){
+						if(ON){
+							timeColor =	setInterval(function(){
+								aLis[i].style.backgroundColor = char16();
+							},1000)
+						} else {
+							clearInterval(timeColor)
+						}
+					}(i))
+				}
+			}	
+			// 鼠标移出清楚随机颜色定时器
+			direction.onmouseout = function(){
+				for (var i = 0; i <= timeColor; i++) {
+					(function(i){
+						if( ON ){
+							clearInterval(i)
+						} else {
+							clearInterval(timeColor)
+						}
+					}(i))
+				}
+			}
+			// 鼠标按住隐藏随机颜色功能显示漫画并开启导航栏随机颜色
+			direction.onmousedown = function(){
+				// 设置 隐藏定时器
+				timeSet = setTimeout(function(){
+					aSet.style.display = "none";
+				},3000)
+				clearInterval(timeColorNav);
+				clearInterval(timeAutoPlay);
+				// 随机颜色隐藏漫画显示
+				ON = false;
+				aBgc.style.display = "none";
+				aCartoon.style.display = "block";
+				// 设置 显示
+				aSet.style.display = "block";
+				// 导航栏定时器
+				timeColorNav = setInterval(function(){
+					direction.style.backgroundColor = char16();
+				},1000)
+				// 清除随机颜色定时器
+				for (var i = 0; i <= timeColor; i++) {
+					(function(i){
+						clearInterval(i)
+					}(i))
+				}
+				// 判断按钮使用上翻还是下翻漫画
+				if(direction==aSup){
+					clearInterval(timePlay);
+					timePlay =	setInterval(function(){
+						j=j-1;
+						oLi.style.transform = "translateY("+j+"px)";
+							if(j<-5900){
+								j = -5900;
+								clearInterval(timePlay);
+								oLi.style.transform = "translateY(-5900px)";
+							}
+						},15)
+				} else if (direction==aSub){
+					clearInterval(timePlay);
+					if(j<0){
+						timePlay =	setInterval(function(){
+							oLi.style.transform = "translateY("+j+"px)";
+							j=j+1;
+							if(j>=0){
+								clearInterval(timePlay);
+								oLi.style.transform = "translateY(0px)";
+								j = 0;
+							}
+						},15)
+					} 
+				}
+			}
+			// 鼠标释放清楚播放和颜色的定时器
+			direction.onmouseup = function(){
+				clearInterval(timeColorNav)
+				clearInterval(timePlay)
+			}
+		}
+		// 随机颜色
+		function char16(){
+			var c = "#";
+			for (var i=0;i<6;i++){
+				var n = parseInt(Math.random()*16).toString(16);
+				c+=n;
+			}
+			return c;
+		}
+		// 点击设置图标显示自动播放设置隐藏设置图标
+		aSet.onclick = function(){
+			aSet.style.display = "none";
+			autoPlay.style.display = "block";
+			
+		}
+		// 用定时器隐藏自动播放按键
+		autoPlay.onmouseleave = function(){
+			timeDisplay = setTimeout(function(){
+				autoPlay.style.display = "none";
+			},3000)
+		}
+		
+		// 函数封装自动播放
+		autoplay(aDd[0],10);
+		autoplay(aDd[1],20);
+		function autoplay(obj,s){
+			obj.onclick = function(){
+				clearInterval(timeAutoPlay);
+				if(j <= -5900){
+					j = -5900;
+					oLi.style.transform = "translateY(-5900px)";
+				} else if (j > -5900){
+					timeAutoPlay =	setInterval(function(){
+						j=j-1;
+						if(j <= -5900){
+							clearInterval(timeAutoPlay);
+							oLi.style.transform = "translateY(-5900px)";
+							j = -5900;
+						}
+						oLi.style.transform = "translateY("+j+"px)";
+					},s)
+			 	 }  
+			}
+		}
+	</script>
+</body>
+</html>

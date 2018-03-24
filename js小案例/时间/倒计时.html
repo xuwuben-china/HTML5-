@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>倒计时</title>
+	<style>
+		*{margin: 0;padding: 0;}
+		body{
+			background-color: #ccc;
+		}
+		#countdown{
+			width: 400px;
+			margin: 50px auto 0;
+			padding: 40px 10px;
+			text-align: center;
+			background-color: #999;
+			border-radius:5px;
+			box-shadow: 0 0 10px 10px #333;
+		}
+		#countdown .key input{
+			width: 40px;
+		}
+		#countdown .key span{
+			padding: 5px;
+			font-weight: bold;
+			color:purple;
+		}
+		#img .day{
+			margin-top: 5px;
+			margin-bottom: 20px;
+
+		}
+		#img .day span{
+			font-size: 70px;
+			padding-left:20px;
+			font-weight: bold;
+			vertical-align:5px; 
+
+		}
+		.text{
+			margin-top: 20px;
+		}
+		.text p{
+			width: 100%;
+			text-align: center;
+			line-height: 40px;
+			height: 40px;
+			color:#E32D2D;
+			font-weight: bold;
+			font-size: 20px;
+		}
+	</style>
+</head>
+<body>
+	<div id="countdown">
+		<div class="key">
+			<input type="text" name="year"><span>年</span>
+			<input type="text" name="month"><span>月</span>
+			<input type="text" name="date"><span>日</span>
+			<button>开始倒计时</button>
+		</div>
+		<div class="text">
+			<p></p>
+		</div>
+		<div id="img">
+			<div class="day">
+				<img src="images/0.png" alt="#">
+				<img src="images/0.png" alt="#">
+				<img src="images/0.png" alt="#">
+				<span>天</span>
+			</div>
+			<img src="images/0.png" alt="#">
+			<img src="images/0.png" alt="#">
+			<img src="images/d.png" alt="#">
+			<img src="images/0.png" alt="#">
+			<img src="images/0.png" alt="#">
+			<img src="images/d.png" alt="#">
+			<img src="images/0.png" alt="#">
+			<img src="images/0.png" alt="#">
+		</div>
+	</div>
+	
+	<script>
+		var aInput = document.getElementsByTagName("input");
+		var aBut = document.getElementsByTagName("button")[0];
+		var aImg = document.getElementsByTagName("img");
+		var aText = document.getElementsByTagName("p")[0];
+		var year = null;
+		var month = null;
+		var date = null;
+		var countDown = null;
+		aBut.onclick = function(){
+			var nowtime = new Date();
+			year = aInput[0].value;
+			month = aInput[1].value-1;
+			date = aInput[2].value;
+			if(aInput[0].value == ""&&aInput[1].value == ""&&aInput[2].value == ""){
+				aText.innerText = "最起码选个日子开始倒计时吧!";
+				clearInterval(countDown);
+				return;
+			} else if (aInput[0].value == ""&&aInput[1].value == ""&&aInput[2].value !== ""){
+				aInput[0].value = nowtime.getFullYear();
+				year = nowtime.getFullYear();
+				aInput[1].value = nowtime.getMonth()+1;
+				month = nowtime.getMonth();
+			} else if(aInput[0].value == ""&&aInput[1].value !== ""&&aInput[2].value !== "" ){
+				aInput[0].value = nowtime.getFullYear();
+				year = nowtime.getFullYear();
+			} else if (aInput[2].value == ""){
+				aText.innerText = "日子还没写你让我从哪天开始倒计时?";
+				clearInterval(countDown);
+				return; 
+			}else if(aInput[0].value !== ""&&aInput[1].value == ""&&aInput[2].value !== ""){
+				aInput[1].value = nowtime.getMonth()+1;
+				month = nowtime.getMonth();
+			} 
+			clearInterval(countDown);
+			time();
+			countDown = setInterval(time,1000);
+		}
+		function time(){
+			var newtime = new Date(year,month,date);
+			var nowtime = new Date();
+			var nowyear = nowtime.getFullYear();
+			var timeDiff = newtime - nowtime;
+			if(timeDiff < 0){
+				aText.innerText = "已经过去的时间怎么倒计时呢?重新输入吧!";
+				clearInterval(countDown);
+				return;
+			} else if(year - nowyear > 2){
+				aText.innerText = "时间太长算不出来啊";
+				clearInterval(countDown);
+				return;
+			}
+			aText.innerText = "";
+			var dayDiff = zeroday(Math.floor(timeDiff/(1000*60*60*24)));
+			var hourDiff = zero(Math.floor(timeDiff/(1000*60*60)%24));
+			var minuteDiff = zero(Math.floor(timeDiff/(1000*60)%60));
+			var secondDiff = zero(Math.floor(timeDiff/1000%60));
+			var day1 = String(dayDiff).match(/^\d/);
+			var day2 = String(dayDiff).match(/\B\d\B/);
+			var day3 = String(dayDiff).match(/\d$/);
+			var hour1 = String(hourDiff).match(/^\d/);
+			var hour2 = String(hourDiff).match(/\d$/);
+			var minute1 = String(minuteDiff).match(/^\d/);
+			var minute2 = String(minuteDiff).match(/\d$/);
+			var second1 = String(secondDiff).match(/^\d/);
+			var second2 = String(secondDiff).match(/\d$/);
+			aImg[0].src = "images/"+day1+".png";
+			aImg[1].src = "images/"+day2+".png";
+			aImg[2].src = "images/"+day3+".png";
+			aImg[3].src = "images/"+hour1+".png";
+			aImg[4].src = "images/"+hour2+".png";
+			aImg[6].src = "images/"+minute1+".png";
+			aImg[7].src = "images/"+minute2+".png";
+			aImg[9].src = "images/"+second1+".png";
+			aImg[10].src = "images/"+second2+".png";
+
+		}
+		function zero(value){
+			value = 0 <= value && value < 10 ? "0"+value : value;
+			return value;
+		}
+		function zeroday(value){
+			if(10 <= value && value < 100){
+				value = "0"+value;
+				return value;
+			} else if (0 <= value && value  < 10){
+				value = "00"+value;
+				return value;
+			}
+			return value;
+		}
+	</script>
+</body>
+</html>

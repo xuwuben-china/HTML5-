@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>随机数</title>
+	<style>
+		#box{
+			width: 300px;
+			margin: 50px auto 0 ;
+			padding: 10px;
+			border: 1px solid #f0f0f0;
+		}
+		div.number{
+			max-height:400px;
+			overflow:auto;
+		}
+		p.number{
+			width: 100%;
+			color:#00BFFF;
+			word-break:break-all;
+		}
+		p.hint{
+			width: 100%;
+			color:red;
+			font-size: 20px;
+			animation:hint 0.5s linear;
+		}
+		@keyframes hint{
+			0%{font-weight: normal;}
+			80%{font-weight: bold;}
+			100%{font-weight: normal;}
+		}
+		span{
+			font-size: 18px;
+			color:purple;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<input type="text" placeholder="请输入2-31之间的数字"/>
+		<button>提交</button>
+		<button>重置</button>
+		<div class="number"></div>
+	</div>
+	<script>
+		var aInput = document.getElementsByTagName("input")[0];
+		var aButton = document.getElementsByTagName("button");
+		var aNumber = document.getElementsByClassName("number")[0];
+		var aBox = document.getElementById("box");
+		var aHint = document.getElementsByClassName("hint");
+		var aBoxHtml = aBox.innerHTML;
+		var aNumberHtml = aNumber.innerHTML;
+		var i = 0;
+		function fn(n){
+			var arr = [];
+			if( n > 31 ){
+				aNumber.innerHTML += "<p class='hint'>由于输入值“"+n+"”大于31了，已取31！</p>";
+				n = 31;
+			} else if ( n < 2 ){
+				aNumber.innerHTML += "<p class='hint'>由于输入值“"+n+"”小于2了，已取2！</p>";
+				n = 2 ;
+			} else if (isNaN(n)){
+				aNumber.innerHTML += "<p class='hint'>输入错误!请重新输入2-31之间的数字</p>";
+				return ;
+			} else {
+				aNumber.innerHTML += "<p class='hint'>输入正确！</p>";
+			}
+			pushArray();
+			function pushArray(){
+				while (arr.length < n){
+					var range = parseInt(Math.random()*31+2);
+					if (arr.indexOf(range) === -1){
+						arr.push(range)
+					}
+				}
+			}
+			return arr.sort(function(a,b){
+				return a - b;
+			});
+		}
+		aButton[0].onclick = function(){
+			if ( isNaN(aInput.value) ){
+				fn(aInput.value)
+				aInput.value = "";
+			} else if ( aInput.value == ""){
+				aNumber.innerHTML += "<p class='hint'>您还没有输入数字,请输入2-31之间的数字！</p>";
+
+			}else {
+			var a = fn(aInput.value).join("，")
+			i++;
+			aNumber.innerHTML += "<p class='number'><span>"+i+"、</span>["+a+"]</p>";
+			aInput.value = "";
+			}
+			if(aHint.length >1 ){
+				aHint[aHint.length-2].style.display = "none";
+			}
+			aNumber.scrollTop = aNumber.scrollHeight;
+		}
+		aButton[1].onclick = function(){
+			i = 0;
+			aNumber.innerHTML = aNumberHtml;
+			aInput.value = "";
+	}
+	</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>无缝轮播1</title>
+	<style>
+		*{margin: 0;padding: 0;}
+		ul{list-style: none;}
+		#banner{
+			position: relative;
+			width: 600px;
+			height: 400px;
+			margin:50px auto 0;
+			box-shadow: 0 0 20px 20px #ccc;
+			user-select:none;
+			overflow: hidden;
+		}
+		#imgul{
+			position: absolute;
+			width: 800%;
+		}
+		#imgul li{
+			float:left;
+		}
+		#imgul li:first-child,#imgul li:last-child{
+			position:relative;
+		}
+		#imgul li img{
+			vertical-align: top;
+		}
+		#btnul{
+			position: absolute;
+			width: 150px;
+			text-align: center;
+			bottom:0;
+			left:0;
+			right: 0;
+			margin:auto;
+		}
+		#btnul li{
+			display: inline-block;
+			height: 20px;
+			width: 20px;
+			background-color:purple;
+			border-radius:50%;
+			cursor:pointer;
+
+		}
+		.btn{
+			position: absolute;
+			font-size: 50px;
+			color:#fff;
+			text-align: center;
+			line-height: 45px;
+			top:50%;
+			margin-top:-20px;
+			width: 45px;
+			height: 50px;
+			background-color:rgba(0,0,0,0.5);
+			cursor:pointer;
+		}
+		.prev{
+			left:0;
+		}
+		.next{
+			right: 0;
+		}
+	</style>
+</head>
+<body>
+	<div id="banner">
+		<ul id="imgul">
+			<li><img src="img/0.jpg" alt="#"></li>
+			<li><img src="img/1.jpg" alt="#"></li>
+			<li><img src="img/2.jpg" alt="#"></li>
+			<li><img src="img/3.jpg" alt="#"></li>
+			<li><img src="img/4.jpg" alt="#"></li>
+		</ul>
+		<ul id="btnul">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<div class="btn prev">&lt;</div>
+		<div class="btn next">&gt;</div>
+	</div>
+	<script src="moveTime.js"></script>
+	<script>
+		var aBanner = document.getElementById('banner'),
+		    aImgul = document.getElementById('imgul'),
+			aBtnul = document.getElementById("btnul"),
+			aBtn = document.getElementsByClassName("btn"),
+			oImgli = aImgul.getElementsByTagName('li'),
+			oBtnli = aBtnul.getElementsByTagName('li');
+		var _index = 0;
+		var startTime = new Date();
+		var timer = null;
+		var aImgLen = oImgli.length;
+		var aBtnLen = oBtnli.length;
+		oBtnli[_index].style.backgroundColor = "skyblue";
+		oImgli[aImgLen-1].style.left = -aImgLen * 600 + "px";
+		for(var i=0;i<aBtn.length;i++){
+			aBtn[i].i=i;
+			aBtn[i].onclick = function(){
+				var timeDiff = new Date() - startTime;
+				if(timeDiff >= 1000){
+					if(this.i){
+						rightShift();
+					} else {
+						_index = _index < 0 ? aImgLen - 1 : --_index;
+						move(aImgul,{
+							left:-_index * 600
+						},1000,function(){
+							if(_index == -1){
+								oImgli[aImgLen-1].style.left = 0 + "px";
+								aImgul.style.left = -(aImgLen-1) * 600 + "px";
+								oImgli[0].style.left = aImgLen * 600 + "px";
+								_index = aImgLen - 1;
+							}else if(_index == 1){
+								oImgli[0].style.left = 0 + "px";
+								oImgli[aImgLen-1].style.left = -aImgLen * 600 + "px";
+							}
+						})
+						for(var i=0;i<aBtnLen;i++){
+							oBtnli[i].style.backgroundColor = "purple";
+						}
+						if(_index == -1){
+							oBtnli[aImgLen-1].style.backgroundColor = "skyblue";
+						}else{
+							oBtnli[_index].style.backgroundColor = "skyblue";
+						}
+					}
+					startTime = new Date();
+				}
+			}
+		}
+		for(var i=0;i<aBtnLen;i++){
+			oBtnli[i].i=i
+			oBtnli[i].onclick = function(){
+				oImgli[0].style.left = 0 + "px";
+				oImgli[aImgLen-1].style.left = 0 + "px";
+				var _this = this;
+				move(aImgul,{
+					left:(this.i) * -600
+				},1000,function(){
+					if(_index == 0){
+						oImgli[aImgLen-1].style.left = -aImgLen * 600 + "px";
+					}else if(_index == aImgLen-1){
+						oImgli[0].style.left = aImgLen * 600 + "px";
+					}
+				})
+				for(var j=0;j<aBtnLen;j++){
+						oBtnli[j].style.backgroundColor = "purple";
+					}
+				oBtnli[_this.i].style.backgroundColor = "skyblue";
+				_index = _this.i;
+			}
+		}
+		timer = setInterval(autoPlay,2500);
+		// 自动轮播
+		function autoPlay(){
+			rightShift();
+		}
+		// 右移轮播
+		function rightShift(){
+			_index = _index < aImgLen  ? ++_index : 0;
+			move(aImgul,{
+				left:-_index * 600
+			},1000,function(){
+				if(_index == aImgLen - 2){
+					oImgli[aImgLen-1].style.left = 0 + "px";
+					oImgli[0].style.left = aImgLen * 600 + "px";
+				}else if(_index == aImgLen){
+					oImgli[0].style.left = 0 + "px";
+					aImgul.style.left = 0 + "px";
+					oImgli[aImgLen-1].style.left = -aImgLen * 600 + "px";
+					_index = 0;
+				}
+			})
+			for(var i=0;i<aBtnLen;i++){
+				oBtnli[i].style.backgroundColor = "purple";
+			}
+			if(_index == aImgLen){
+				oBtnli[0].style.backgroundColor = "skyblue";
+			}else{
+				oBtnli[_index].style.backgroundColor = "skyblue";
+			}
+		}
+		// 鼠标移上去清除自动轮播
+		aBanner.onmouseover = function(){
+			clearInterval(timer)
+		}
+		// 鼠标移出去添加自动轮播
+		aBanner.onmouseout = function(){
+			timer = setInterval(autoPlay, 2500)
+		}
+		
+	</script>
+</body>
+</html>

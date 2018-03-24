@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>图片笑话大全</title>
+	<style>
+		*{margin: 0;padding: 0;}
+		#container{
+			width: 400px;
+			height:600px;
+			margin: auto;
+			border: 1px solid #000;
+			box-shadow:0 0 5px 5px #ccc;
+			overflow-y:scroll;
+		}
+		#container h1{
+
+			text-align: center;
+			margin: 20px 0;
+		}
+		#list li{
+			list-style: none;
+			box-sizing:border-box;
+			padding:10px;
+		}
+		#list li div + div {
+			margin-top: 20px;
+		}
+		#list li div p{
+			text-indent: 2em;
+			font-weight: bold;
+			color:#999;
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<h1>图片笑话大全</h1>
+		<ul id="list">
+			<li></li>
+		</ul>
+	</div>
+	<script src="AJAX.js"></script>
+	<script>
+		var aLis = document.getElementsByTagName("li")[0];
+		var oCon = document.getElementById("container");
+		var cPage = 1;
+		getData(cPage);
+		function getData(cPage){
+			var url = "http://route.showapi.com/341-1?maxResult=20&page="+cPage+"&showapi_appid=56053&showapi_test_draft=false&type=34&showapi_sign=e59ea5fd5d434e10b64e75a5abe181df";
+			ajax("get",url,"",function(data){
+				
+				data = JSON.parse(data).showapi_res_body;
+				for(var i=0;i<19;i++){
+					var contentlist = data.contentlist;
+					var item = contentlist[i];
+					var oDiv = document.createElement("div"),
+					    oH3 = document.createElement("h3"),
+						oP = document.createElement("p");
+					oH3.innerHTML = item.title;
+					oP.innerHTML = item.text;
+					oDiv.appendChild(oH3);
+					oDiv.appendChild(oP);
+					aLis.appendChild(oDiv);
+				}
+			})
+		}
+		oCon.onscroll = function(){
+			var aliH = aLis.offsetHeight;;
+			var oConScrollT = oCon.scrollTop;
+			var oConH = oCon.offsetHeight;
+			console.log(aliH,oConScrollT,oConH)
+			if(oConScrollT + oConH > aliH - 100){
+				console.log(1)
+				cPage++;
+				getData(cPage);
+			}
+		}
+		
+		function getTop(obj){
+			var iTop = 0;
+			while(obj){
+				iTop += obj.offsetTop;
+				obj = obj.offsetParent;
+			}
+			return iTop;
+		}
+		/*function getShort(){
+			var index = 0;
+			var ih = aLis[index].offsetHeight;
+			for(var i=0;i<aLis.length;i++){
+				if(aLis[i].offsetHeight < ih){
+					index = i;
+					ih = aLis[i].offsetHeight;
+				}
+			}
+			return index;
+		}*/
+	</script>
+</body>
+</html>

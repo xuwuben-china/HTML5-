@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{padding: 0;margin: 0;}
+		#box{
+			width: 550px;
+			padding: 10px;
+			margin: 50px auto 0;
+			border: 1px solid #f0f0f0;
+		}
+		input{
+			width: 200px;
+			height: 20px;
+
+		}
+		button{
+			height: 25px;
+			width: 40px;
+			cursor:pointer;
+		}
+		#text{
+			margin-top: 20px;
+			line-height: 30px;
+			padding: 10px;
+			text-indent: 2em;
+			box-shadow: 0 0 2px;
+		}
+		span{
+			font-size: 20px;
+			font-weight: bold;
+			color:red;
+		}
+		.content{
+			background-color: #ccc;
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<input type="text">
+		<input type="text">
+		<button>查找</button>
+		<button>替换</button>
+		<button>重置</button>
+		<p id="text">
+			历史方位——中国特色社会主义进入了新时代。这是一个重大判断。进入新时代，是从党和国家事业发展的全局视野、从改革开放近40年历程和十八大	以来5年取得的历史性成就和历史性变革的方位上，所作出的科学判断。这	个新时代，是承前启后、继往开来、在新的历史条件下继续夺取中国特色社		会主义伟大胜利的时代。报告立足于党的十八大以来的新实践新成就，谋划	了到本世纪中叶的奋斗目标。方位决定方略。在新的历史条件下，要不忘初	心，牢记使命。实现中华民族伟大复兴就是新时代中国共产党的历史使命，	这也是近代以来中华民族最伟大的梦想。报告提出，进入新时代，实现伟大	梦想，必须进行伟大斗争、建设伟大工程、推进伟大事业。
+		</p>
+	</div>
+	<script>
+		var aInput = document.getElementsByTagName("input");
+		var aBut = document.getElementsByTagName("button");
+		var aText = document.getElementById("text");
+		var aContent = document.getElementsByClassName("content")[0];
+		var aSpan = document.getElementsByTagName("span");
+		var  former= aText.innerHTML;
+		var text = aText.innerHTML.split(find).join(find);
+		aBut[0].onclick = function(){
+			find = aInput[0].value.trim();
+			if(find !== "") {
+				if(aSpan.length == 0){
+					// 第一次查找
+					text = aText.innerHTML.split(find).join(find);
+					aText.innerHTML = aText.innerHTML.split(find).join("<span>"+find+"</span>");
+				} else if (aSpan.length > 0){
+					// 第二次查找
+					// 先将整个内容换成第一次修改后的内容
+					aText.innerHTML = text;
+					// 再次进行查找
+					aText.innerHTML = aText.innerHTML.split(find).join("<span>"+find+"</span>");
+				}
+			}
+		}
+		aBut[1].onclick = function(){
+			var replace = aInput[1].value.trim();
+			if(find !== "" && replace !== ""){
+				aText.innerHTML = aText.innerText.split(find).join(replace);
+				// 将修改后的内容保存起来方便继续进行第二次查找
+				text = aText.innerHTML.split(find).join(find);
+				// 将修改后的内容返回到全局变量以便继续查询使用
+				return text;
+			}
+		}
+		aBut[2].onclick = function(){
+			aInput[1].value = "";
+			aInput[0].value = "";
+			aText.innerHTML = former;
+		}
+	</script>
+</body>
+</html>

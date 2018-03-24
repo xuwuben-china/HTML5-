@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>无缝轮播1</title>
+	<style>
+		*{margin: 0;padding: 0;}
+		ul{list-style: none;}
+		#banner{
+			position: relative;
+			width: 600px;
+			height: 400px;
+			margin:50px auto 0;
+			box-shadow: 0 0 20px 20px #ccc;
+			user-select:none;
+			overflow: hidden;
+		}
+		#imgul{
+			position: absolute;
+			width: 800%;
+			left:-600px;
+		}
+		#imgul li{
+			float:left;
+		}
+		#imgul li img{
+			vertical-align: top;
+		}
+		#btnul{
+			position: absolute;
+			width: 150px;
+			text-align: center;
+			bottom:0;
+			left:0;
+			right: 0;
+			margin:auto;
+		}
+		#btnul li{
+			display: inline-block;
+			height: 20px;
+			width: 20px;
+			background-color:purple;
+			border-radius:50%;
+			cursor:pointer;
+
+		}
+		.btn{
+			position: absolute;
+			font-size: 50px;
+			color:#fff;
+			text-align: center;
+			line-height: 45px;
+			top:50%;
+			margin-top:-20px;
+			width: 45px;
+			height: 50px;
+			background-color:rgba(0,0,0,0.5);
+			cursor:pointer;
+		}
+		.prev{
+			left:0;
+		}
+		.next{
+			right: 0;
+		}
+	</style>
+</head>
+<body>
+	<div id="banner">
+		<ul id="imgul">
+			<li><img src="img/4.jpg" alt="#"></li>
+			<li><img src="img/0.jpg" alt="#"></li>
+			<li><img src="img/1.jpg" alt="#"></li>
+			<li><img src="img/2.jpg" alt="#"></li>
+			<li><img src="img/3.jpg" alt="#"></li>
+			<li><img src="img/4.jpg" alt="#"></li>
+			<li><img src="img/0.jpg" alt="#"></li>
+		</ul>
+		<ul id="btnul">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<div class="btn prev">&lt;</div>
+		<div class="btn next">&gt;</div>
+	</div>
+	<script src="moveSpeed.js"></script>
+	<script>
+		var aBanner = document.getElementById('banner'),
+		    aImgul = document.getElementById('imgul'),
+			aBtnul = document.getElementById("btnul"),
+			aBtn = document.getElementsByClassName("btn"),
+			oImgli = aImgul.getElementsByTagName('li'),
+			oBtnli = aBtnul.getElementsByTagName('li');
+		var _index = 1;
+		var startTime = new Date();
+		var timer = null;
+		var moveTimer = null;
+		var aImgLen = oImgli.length;
+		var aBtnLen = oBtnli.length;
+		oBtnli[_index-1].style.backgroundColor = "skyblue";
+		for(var i=0;i<aBtn.length;i++){
+			aBtn[i].i=i;
+			aBtn[i].onclick = function(){
+				var timeDiff = new Date() - startTime;
+				if(timeDiff >= 1000){
+					clearInterval(moveTimer);
+					if(this.i){
+						rightShift();
+					} else {
+						// _index--;
+						_index = (_index-1) % aImgLen;
+						// _index = _index <= 0 ? _index = aImgLen - 1 : --_index;
+						move(aImgul,{
+							left:_index*-600
+						},20,function(){
+								if(_index <= 0){
+									_index = aImgLen - 2;
+									aImgul.style.left = _index * -600 + "px";
+								}
+							});
+						for(var j=0;j<aBtnLen;j++){
+							oBtnli[j].style.backgroundColor = "purple";
+						}
+						if (_index == 0){
+							oBtnli[aImgLen-3].style.backgroundColor = "skyblue";
+						} else {
+							oBtnli[_index-1].style.backgroundColor = "skyblue";
+						}
+					}
+					startTime = new Date();
+				}
+			}
+		}
+		for(var i=0;i<aBtnLen;i++){
+			oBtnli[i].i=i
+			oBtnli[i].onclick = function(){
+				clearInterval(moveTimer);
+
+				var _this = this;
+				move(aImgul,{
+					left:(this.i+1) * -600
+				},100)
+				for(var j=0;j<aBtnLen;j++){
+					oBtnli[j].style.backgroundColor = "purple";
+				}
+				oBtnli[_this.i].style.backgroundColor = "skyblue";
+				_index = _this.i+1;
+			}
+		}
+		timer = setInterval(autoPlay,2500);
+		// 自动轮播
+		function autoPlay(){
+			rightShift();
+		}
+		// 右移轮播
+		function rightShift(){
+			clearInterval(moveTimer);
+			// _index ++ ;
+			_index = (_index + 1) % aImgLen;
+			// _index = _index < oImgli.length - 1 ? ++_index : 0;
+			move(aImgul,{
+				left:_index*-600
+			},20,function(){
+					if(_index >= aImgLen - 1){
+						_index = 1;
+						aImgul.style.left = _index * -600 + "px";
+					}
+				});
+			for(var j=0;j<aBtnLen;j++){
+				oBtnli[j].style.backgroundColor = "purple";
+			}
+			if(_index == aImgLen - 1 || _index == 0){
+				oBtnli[0].style.backgroundColor = "skyblue";
+			} else {
+				oBtnli[_index-1].style.backgroundColor = "skyblue";
+			}
+		}
+		// 鼠标移上去清除自动轮播
+		aBanner.onmouseover = function(){
+			clearInterval(timer)
+		}
+		// 鼠标移出去添加自动轮播
+		aBanner.onmouseout = function(){
+			timer = setInterval(autoPlay, 2500)
+		}
+
+		// BUG:onOff有问题 要是没达到目标值就进行下个move那么前一个定时器就没移除
+		// 因此必须在执行每个move前就清除一下定时器 
+		// 但这样做会造成执行右移每一张图片要用60个定时器的情况，无疑这样会造成浏览器负担 而且由于move没用执行完回调函数因此不会执行
+		// 因此无缝轮播不适用setInterval()定时器
+		/*function move(obj,json,speed,callback){
+			
+			moveTimer = setInterval(function(){
+				var onOff = true;
+
+				for (var attr in json){
+					var start;
+					if(attr === "opacity"){
+						start = getStyle(obj,attr)*100;
+					}else{
+						start = parseInt(getStyle(obj,attr));
+					}
+					var target = json[attr];
+					var newSpeed = start > target ? -speed : speed;
+					if(start != target){
+						if(attr === "opacity"){
+							var end = start + newSpeed;
+							if(start > target && end < target || start < target && end > target){
+								obj.style[attr] = target / 100;
+							} else {
+								obj.style[attr] = end/100 ;
+							}
+						}else{
+							var end = start + newSpeed;
+							if(start > target && end < target || start < target && end > target){
+								obj.style[attr] = target + "px";
+							} else {
+								obj.style[attr] = end + "px";
+							}
+						}
+						onOff = false;	
+					} 
+				}
+				if(onOff){
+					clearInterval(moveTimer);
+					callback&&callback();
+				}
+			},16)
+		}*/
+		
+		function getStyle(obj,attr){
+			return window.getComputedStyle ? window.getComputedStyle(obj)[attr] : obj.currentStyle[attr];
+		}
+	</script>
+</body>
+</html>

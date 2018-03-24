@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ajax</title>
+	<style>
+		
+	</style>
+</head>
+<body>
+	<div id="continer"></div>
+	<script src="AJAX.js"></script>
+	<script>
+		var oCon = document.getElementById("continer");
+		
+		var url = "https://route.showapi.com/341-3?maxResult=20&page=1&showapi_appid=41249&showapi_sign=b3df448fb71d46f4a99a751d85b91996";
+		// var xhr = new XMLHttpRequest();
+		/*xhr.open("get",url,true);
+		xhr.send();
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				var json = JSON.parse(xhr.responseText)
+				for(var i=0;i<json.showapi_res_body.allPages;i++){
+					var odiv = document.createElement("div");
+					var oh3 = document.createElement("h3");
+					var oimg = document.createElement("img");
+					oh3.innerHTML = json.showapi_res_body.contentlist[i].title;
+					oimg.src = json.showapi_res_body.contentlist[i].img;
+					odiv.style.float = "left";
+					odiv.appendChild(oh3);
+					odiv.appendChild(oimg);
+					oCon.appendChild(odiv);
+				}
+			}
+		}*/
+		ajax("get",url,"",function(data){
+				var json = JSON.parse(data);
+				for(var i=0;i<json.showapi_res_body.allPages;i++){
+					var odiv = document.createElement("div");
+					var oh3 = document.createElement("h3");
+					var oimg = document.createElement("img");
+					oh3.innerHTML = json.showapi_res_body.contentlist[i].title;
+					oimg.src = json.showapi_res_body.contentlist[i].img;
+					odiv.style.float = "left";
+					// odiv.appendChild(oh3);
+					odiv.appendChild(oimg);
+					oCon.appendChild(odiv);
+				}
+		})
+	</script>
+</body>
+</html>

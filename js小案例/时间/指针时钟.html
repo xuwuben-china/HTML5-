@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>时钟</title>
+	<style>
+		*{margin: 0;padding: 0;}
+		li{list-style: none;}
+		#warp{
+			width: 400px;
+			margin:auto;
+		}
+		#bell{
+			position:relative;
+			width: 300px;
+			height: 300px;
+			margin: 50px;
+			border: 1px solid #000;
+			border-radius: 50%;
+			-webkit-border-radius: 50%;
+			-ms-border-radius: 50%;
+			-o-border-radius: 50%;
+			box-shadow: #000 0px 0px 20px 10px;
+			background: url("images/hours.jpg") -40px -10px/400px 400px  no-repeat;
+		}
+		#bell:after{
+			position: absolute;
+			top:150px;
+			left:142px;
+			display: block;
+			width: 10px;
+			height: 10px;
+			background-color: purple;
+			content: "";
+			border-radius: 50%;
+			-webkit-border-radius: 50%;
+			-ms-border-radius: 50%;
+			-o-border-radius: 50%;
+		}
+		#bell span{
+			position:absolute;
+			top:-5px;
+			left:145px;
+			width: 10px;
+			height: 10px;
+			background-color:red;
+			border-radius: 50%;
+			-webkit-border-radius: 50%;
+			-ms-border-radius: 50%;
+			-o-border-radius: 50%;
+		}
+		p:nth-of-type(1){
+			width: 130px;
+			height: 5px;
+			border: 1px solid #000;
+			background-color: black;
+			border-radius: 0 100% 0 100%;
+			-webkit-border-radius: 0 100% 0 100%;
+			-ms-border-radius: 0 100% 0 100%;
+			-o-border-radius: 0 100% 0 100%;
+			transform-origin:right bottom;
+			transform:translate(15px,124px) rotate(89deg);
+		}
+		p:nth-of-type(2){
+			width: 100px;
+			height: 5px;
+			border: 1px solid #000;
+			background-color: black;
+			border-radius: 0 100% 0 100%;
+			-webkit-border-radius: 0 100% 0 100%;
+			-ms-border-radius: 0 100% 0 100%;
+			-o-border-radius: 0 100% 0 100%;
+			transform-origin:right bottom;
+			 transform:translate(43px,115px) rotate(90deg); 
+		}
+		#bell li{
+			display: inline-block;
+			font-size: 14px;
+			font-weight: bold;
+			color:red;
+			text-shadow: #E8E8E8 2px 2px 1px;
+		}
+		#bell li:nth-child(1){
+			color:purple;
+			font-size: 20px;
+			-webkit-transform:translate(142px,5px);
+		}
+		#bell li:nth-child(2){
+			-webkit-transform:rotate(30deg) translate(175px,-75px);
+		}
+		#bell li:nth-child(3){
+			-webkit-transform:rotate(60deg) translate(177px,-155px);
+		}
+		#bell li:nth-child(4){
+			color:blue;
+			font-size: 20px;
+			-webkit-transform:rotate(90deg) translate(147px,-225px);
+		}
+		#bell li:nth-child(5){
+			-webkit-transform:rotate(120deg) translate(91px,-270px);
+		}
+		#bell li:nth-child(6){
+			-webkit-transform:rotate(150deg) translate(25px,-285px);
+		}
+		#bell li:nth-child(7){
+			color:skyblue;
+			font-size: 20px;
+			-webkit-transform: translate(37px,275px);
+		}
+		#bell li:nth-child(8){
+			-webkit-transform:rotate(210deg) translate(-88px,-240px);
+		}
+		#bell li:nth-child(9){
+			-webkit-transform:rotate(240deg) translate(-126px,-190px);
+		}
+		#bell li:nth-child(10){
+			color:orange;
+			font-size: 20px;
+			-webkit-transform:rotate(270deg) translate(-140px,-135px);
+		}
+		#bell li:nth-child(11){
+			-webkit-transform:rotate(300deg) translate(-128px,-85px);
+		}
+		#bell li:nth-child(12){
+			-webkit-transform:rotate(330deg) translate(-106px,-40px);
+		}
+		#adjust{
+			margin-bottom: 10px;
+			margin-left: 50px;
+		}
+		#adjust span{
+			color:#DB55D7;
+			font-size: 16px;
+			font-weight: bold;
+		}
+		#adjust button{
+			margin-left: 20px;
+		}
+		input{
+			width: 40px;
+		}
+		select{
+			margin-left: 50px;
+		}
+	</style>
+</head>
+<body>
+	<div id="warp">
+		<div id="bell">
+			<ul>
+				<li>12</li>
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+				<li>6</li>
+				<li>7</li>
+				<li>8</li>
+				<li>9</li>
+				<li>10</li>
+				<li>11</li>
+			</ul>
+			<span></span>
+			<p></p>
+			<p></p>
+		</div>
+		<div id="adjust">
+			<input type="text" placeholder="小时">
+			<span>点</span>
+			<input type="text" placeholder="分钟">
+			<span>分</span>
+			<button class="settlingtime">更改时间</button>
+			<button>网络对时</button>
+
+		</div>
+		<select>
+			<option>1倍</option>
+			<option>2倍</option>
+			<option>4倍</option>
+			<option>5倍</option>
+			<option>6倍</option>
+			<option>8倍</option>
+			<option>10倍</option>
+			<option>20倍</option>
+			<option>30倍</option>
+			<option>100倍</option>
+			<option>1000倍</option>
+		</select>
+		<button>调整速度</button>
+	</div>
+	<script>
+		var aSecond = document.getElementsByTagName("span")[0],
+			aMinuteHand = document.getElementsByTagName("p")[0],
+			aHourHand = document.getElementsByTagName("p")[1],
+			aOption = document.getElementsByTagName("option"),
+			aSettlingTime = document.getElementsByTagName("input"),
+			aAgain = document.getElementsByTagName("select")[0],
+			aButton = document.getElementsByTagName("button"),
+			aImg = document.getElementsByTagName('img');
+		var deg = 0;
+		var r = 150;
+		var hours = 0;
+		var minutes = 0;
+		var timeSecond = null;
+		var again = 1000;
+		// 启动时间
+		nowtime();
+		function nowtime(){
+			var nowtime = new Date();
+			var nowhours = nowtime.getHours();
+			var nowminute = nowtime.getMinutes();
+			var nowsecond = nowtime.getSeconds();
+			hours = nowhours;
+			minutes = nowminute;
+			deg = nowsecond*6;
+			clock();
+			second(deg);
+		}
+		// 更改时间
+		aButton[0].onclick = function(){
+			var h = parseInt(aSettlingTime[0].value.match(/\d+/));
+			var min = parseInt(aSettlingTime[1].value.match(/\d+/));
+			// 判断输入的是不是数字
+			if ( !isNaN(h)&&!isNaN(min)){
+				hours = h%12;
+				minutes = min%60;
+				deg = deg%360;
+				clock();
+				second(deg%360);
+				speed(again);
+			}
+		}
+		// 网络对时
+		aButton[1].onclick = function(){
+			nowtime();
+		}
+		// 调整速度
+		aButton[2].onclick = function(){
+			var value = parseInt(aAgain.value);
+			again = parseInt(1000/value);
+			speed(again);
+		}
+		// 指针定时器
+		speed(again);
+		function speed(s){
+			clearInterval(timeSecond);
+			timeSecond = setInterval(function(){
+				deg=(deg+6)%259200;
+				// 秒针动画
+				second(deg%360);
+				// 时针和分针动画
+				clock();
+			},s)
+		}
+		// 分针和时针
+		function clock(){
+			aMinuteHand.style.transform = "translate(15px,124px) rotate("+parseInt(((90+minutes*6)-1)+deg/60)%360+"deg)";
+			aHourHand.style.transform = "translate(43px,115px) rotate("+parseInt((120+30*(hours-1))+deg/720)%360+"deg)";
+		}
+		// 秒针
+		function second(deg){
+			var x = -5 + r+r*Math.sin(Math.PI/180 * deg);
+			var y = -5 + r-r*Math.cos(Math.PI/180 * deg);
+			aSecond.style.left = x + "px";
+			aSecond.style.top = y + "px";
+		}
+	</script>
+</body>
+</html>
